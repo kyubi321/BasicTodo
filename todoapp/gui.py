@@ -1,3 +1,5 @@
+import traceback
+
 import functions_todo as ft
 import PySimpleGUI as pg
 
@@ -49,27 +51,37 @@ while True:
 
         # this case edits the present todolist
         case "Edit":
+            try:
 
-            # we read the file and retrive the list
-            todos = ft.read_text()
 
-            # then select the value to edit from list box
-            edit_todo = values['todos_list'][0]
+                # we read the file and retrive the list
+                todos = ft.read_text()
 
-            # take the index
-            index = todos.index(edit_todo)
+                # then select the value to edit from list box
+                edit_todo = values['todos_list'][0]
 
-            # retrieve the value that is used to updata
-            update_todo = values['todo'] + '\n'
+                # take the index
+                index = todos.index(edit_todo)
 
-            # update the todos list
-            todos[index] = update_todo
+                # retrieve the value that is used to updata
+                update_todo = values['todo'] + '\n'
 
-            # write the todos list in the app
-            ft.write_lines(todos)
+                # update the todos list
+                todos[index] = update_todo
 
-            # update the list box
-            window['todos_list'].update(todos)
+                # write the todos list in the app
+                ft.write_lines(todos)
+
+                # update the list box
+                window['todos_list'].update(todos)
+
+            except IndexError as e:
+                tb = traceback.format_exc()
+                # to show a error information in the window use this.
+                #pg.Print(f" an error happened .here is the info ", e,tb)
+                pg.popup_error(f'choose a value to edit')
+
+
 
         # this case is used to close the window if user clicks the close button.
         case pg.WIN_CLOSED:
