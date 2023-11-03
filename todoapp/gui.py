@@ -4,22 +4,25 @@ import functions_todo as ft
 import PySimpleGUI as pg
 
 # create a label for your window
-label = pg.Text("my todo app")
+label = pg.Text("death note")
 
 # create an input box for window
-input_box = pg.InputText(tooltip="enter todo",key="todo")
+input_box = pg.InputText(tooltip="enter todo", key="todo")
 
 # create a button in the todoapp window
 button = pg.Button("Add")
 
 # create a list box to show the list box
-list_box = pg.Listbox(values=ft.read_text(), enable_events=True, size=(45,10),key="todos_list")
+list_box = pg.Listbox(values=ft.read_text(), enable_events=True, size=(45, 10), key="todos_list")
 
 # create an edit button to edit the contents in the todos
 edit = pg.Button("Edit")
+complete = pg.Button("pop")
+clear = pg.Button("clear")
 
 # the window of todoapp, as you put values inside the layout put it in the list such a way that elements together must be kept together
-window = pg.Window("my to do app", layout=[[[label], input_box,button],[list_box,edit]],font=("Helvetica",15))
+window = pg.Window("my to do app", layout=[[[label], input_box], [list_box],[button,edit,complete,clear]],
+                   font=("Helvetica", 15))
 
 # to keep the window open until we break the window that is close button.
 while True:
@@ -34,7 +37,7 @@ while True:
         # and this is only done when there is a value in the input box
 
         case "Add":
-            if values['todo'] =='':
+            if values['todo'] == '':
                 continue
             else:
                 todos = ft.read_text()
@@ -47,12 +50,14 @@ while True:
 
         # this case is used just to show our selection in the listbox in input box also
         case "todos_list":
-            window['todo'].update(values['todos_list'][0])
+            try:
+                window['todo'].update(values['todos_list'][0])
+            except:
+                pg.popup_error('no todo present')
 
         # this case edits the present todolist
         case "Edit":
             try:
-
 
                 # we read the file and retrive the list
                 todos = ft.read_text()
@@ -64,7 +69,7 @@ while True:
                 index = todos.index(edit_todo)
 
                 # retrieve the value that is used to updata
-                update_todo = values['todo'] + '\n'
+                update_todo = values['todo'] +'\n'
 
                 # update the todos list
                 todos[index] = update_todo
@@ -78,14 +83,28 @@ while True:
             except IndexError as e:
                 tb = traceback.format_exc()
                 # to show a error information in the window use this.
-                #pg.Print(f" an error happened .here is the info ", e,tb)
+                # pg.Print(f" an error happened .here is the info ", e,tb)
                 pg.popup_error(f'choose a value to edit')
 
-
+        case "pop":
+            try:
+                todos = ft.read_text()
+                completed_todo = values['todos_list'][0]
+                todos.remove(completed_todo)
+                ft.write_lines(todos)
+                window['todos_list'].update(todos)
+            except IndexError as e:
+                tb = traceback.format_exc()
+                pg.popup_error("no element in the list \n try adding some !!!")
+        case "clear":
+            todos = ft.read_text()
+            todos.clear()
+            ft.write_lines(todos)
+            window['todos_list'].update([''])
 
         # this case is used to close the window if user clicks the close button.
         case pg.WIN_CLOSED:
             break
     print(event)
     print(values)
-window.close() 
+window.close()
