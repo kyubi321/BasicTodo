@@ -3,6 +3,10 @@ import traceback
 import functions_todo as ft
 import PySimpleGUI as pg
 
+
+
+
+pg.theme("dark Amber")
 # create a label for your window
 label = pg.Text("death note")
 
@@ -17,11 +21,12 @@ list_box = pg.Listbox(values=ft.read_text(), enable_events=True, size=(45, 10), 
 
 # create an edit button to edit the contents in the todos
 edit = pg.Button("Edit")
-complete = pg.Button("pop")
-clear = pg.Button("clear")
+complete = pg.Button("completed")
+clear = pg.Button("Clear")
+exit = pg.Button('Exit')
 
 # the window of todoapp, as you put values inside the layout put it in the list such a way that elements together must be kept together
-window = pg.Window("my to do app", layout=[[[label], input_box], [list_box],[button,edit,complete,clear]],
+window = pg.Window("my to do app", layout=[[[label], input_box], [list_box],[button,edit,complete,clear,exit]],
                    font=("Helvetica", 15))
 
 # to keep the window open until we break the window that is close button.
@@ -81,18 +86,20 @@ while True:
                 window['todos_list'].update(todos)
 
             except IndexError as e:
+                # to capture the error use traceback
                 tb = traceback.format_exc()
                 # to show a error information in the window use this.
                 # pg.Print(f" an error happened .here is the info ", e,tb)
                 pg.popup_error(f'choose a value to edit')
 
-        case "pop":
+        case "completed":
             try:
                 todos = ft.read_text()
                 completed_todo = values['todos_list'][0]
                 todos.remove(completed_todo)
                 ft.write_lines(todos)
                 window['todos_list'].update(todos)
+                window['todo'].update('')
             except IndexError as e:
                 tb = traceback.format_exc()
                 pg.popup_error("no element in the list \n try adding some !!!")
@@ -101,7 +108,8 @@ while True:
             todos.clear()
             ft.write_lines(todos)
             window['todos_list'].update([''])
-
+        case "Exit":
+            break
         # this case is used to close the window if user clicks the close button.
         case pg.WIN_CLOSED:
             break
