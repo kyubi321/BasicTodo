@@ -1,12 +1,13 @@
+# import necessary modules in the program
 import traceback
-
 import functions_todo as ft
 import PySimpleGUI as pg
+import time
 
 
 
 
-pg.theme("dark Amber")
+pg.theme("light green 6")
 # create a label for your window
 label = pg.Text("death note")
 
@@ -19,6 +20,10 @@ button = pg.Button("Add")
 # create a list box to show the list box
 list_box = pg.Listbox(values=ft.read_text(), enable_events=True, size=(45, 10), key="todos_list")
 
+# adding a clock on top of the app
+clock = pg.Text('',key="clock")
+
+
 # create an edit button to edit the contents in the todos
 edit = pg.Button("Edit")
 complete = pg.Button("completed")
@@ -26,13 +31,16 @@ clear = pg.Button("Clear")
 exit = pg.Button('Exit')
 
 # the window of todoapp, as you put values inside the layout put it in the list such a way that elements together must be kept together
-window = pg.Window("my to do app", layout=[[[label], input_box], [list_box],[button,edit,complete,clear,exit]],
+window = pg.Window("my to do app", layout=[[clock],[[label], input_box], [list_box],[button,edit,complete,clear,exit]],
                    font=("Helvetica", 15))
 
 # to keep the window open until we break the window that is close button.
 while True:
     # tracking the event and values using two variables
-    event, values = window.read()
+    # adding time out in the read to refresh the app in every 200 milliseconds
+    event, values = window.read(timeout=200)
+    # adding the clock value in the loop.
+    window["clock"].update(value=time.strftime("%b %d, %Y %H:%M:%S"))
 
     # now when each user action leads to value change in events so by using that we access the match case
 
@@ -58,7 +66,7 @@ while True:
             try:
                 window['todo'].update(values['todos_list'][0])
             except:
-                pg.popup_error('no todo present')
+                pg.popup('no todo present',font=('Helvetica',18))
 
         # this case edits the present todolist
         case "Edit":
@@ -90,7 +98,7 @@ while True:
                 tb = traceback.format_exc()
                 # to show a error information in the window use this.
                 # pg.Print(f" an error happened .here is the info ", e,tb)
-                pg.popup_error(f'choose a value to edit')
+                pg.popup(f'choose a value to edit',font=('Helvetica',18))
 
         case "completed":
             try:
@@ -102,7 +110,7 @@ while True:
                 window['todo'].update('')
             except IndexError as e:
                 tb = traceback.format_exc()
-                pg.popup_error("no element in the list \n try adding some !!!")
+                pg.popup("no element in the list \n try adding some !!!", font=('Helvetica',18))
         case "clear":
             todos = ft.read_text()
             todos.clear()
@@ -113,6 +121,6 @@ while True:
         # this case is used to close the window if user clicks the close button.
         case pg.WIN_CLOSED:
             break
-    print(event)
-    print(values)
+    #print(event)
+   #print(values)
 window.close()
