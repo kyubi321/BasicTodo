@@ -18,6 +18,7 @@ input_box = pg.InputText(tooltip="enter todo", key="todo")
 button = pg.Button("Add")
 
 # create a list box to show the list box
+# the size in pysimplegui works in a way that [w,h] w is width, h is height.
 list_box = pg.Listbox(values=ft.read_text(), enable_events=True, size=(45, 10), key="todos_list")
 
 # adding a clock on top of the app
@@ -111,7 +112,7 @@ while True:
             except IndexError as e:
                 tb = traceback.format_exc()
                 pg.popup("no element in the list \n try adding some !!!", font=('Helvetica',18))
-        case "clear":
+        case "Clear":
             todos = ft.read_text()
             todos.clear()
             ft.write_lines(todos)
