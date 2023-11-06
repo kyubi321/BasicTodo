@@ -9,13 +9,13 @@ import time
 
 pg.theme("light green 6")
 # create a label for your window
-label = pg.Text("death note")
+label = pg.Text("Todo app")
 
 # create an input box for window
 input_box = pg.InputText(tooltip="enter todo", key="todo")
 
 # create a button in the todoapp window
-button = pg.Button("Add")
+button = pg.Button(key="Add",image_source='add.png',size=2,mouseover_colors='LightBlue2')
 
 # create a list box to show the list box
 # the size in pysimplegui works in a way that [w,h] w is width, h is height.
@@ -32,7 +32,7 @@ clear = pg.Button("Clear")
 exit = pg.Button('Exit')
 
 # the window of todoapp, as you put values inside the layout put it in the list such a way that elements together must be kept together
-window = pg.Window("my to do app", layout=[[clock],[[label], input_box], [list_box],[button,edit,complete,clear,exit]],
+window = pg.Window("my to do app", layout=[[clock],[[label], input_box,button], [list_box],[edit,complete,clear,exit]],
                    font=("Helvetica", 15))
 
 # to keep the window open until we break the window that is close button.
